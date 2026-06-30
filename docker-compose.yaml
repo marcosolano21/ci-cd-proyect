@@ -1,0 +1,12 @@
+services:
+  flask:
+    build: ./flask
+    container_name: flask-app
+
+  nginx:
+    build: ./nginx
+    container_name: nginx
+    ports:
+      - "80:80" # Esto va a mapear el puerto 80 de la computadora al puerto 80 del contenedor
+    depends_on:
+      - flask
