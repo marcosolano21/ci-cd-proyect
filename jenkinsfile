@@ -5,41 +5,102 @@ pipeline {
 
         stage('Checkout') {
             steps {
+                echo '========== CHECKOUT =========='
                 git url: 'https://github.com/marcosolano21/ci-cd-proyect.git', branch: 'main'
+            }
+            post {
+                success {
+                    echo 'Checkout completed successfully.'
+                }
+
+                failure {
+                    echo 'Checkout failed.'
+                }
             }
         }
 
         stage('Build') {
             steps {
+                echo '========== BUILD =========='
                 sh 'docker compose build'
             }
+            post {
+                success {
+                    echo 'Build completed successfully.'
+                }
+
+                failure {
+                    echo 'Build failed.'
+                }
+            }            
         }
 
         stage('Start Containers') {
             steps {
+                echo '========== START CONTAINERS =========='
                 sh 'docker compose up -d'
             }
+            post {
+                success {
+                    echo 'Start Containers completed successfully.'
+                }
+
+                failure {
+                    echo 'Start Containers failed.'
+                }
+            }            
         }
 
         stage('Health Check') {
             steps {
-                sh 'curl http://localhost'
+                echo '========== HEALTH CHECK =========='
+                sh 'docker exec nginx curl -f http://localhost'
             }
+            post {
+                success {
+                    echo 'Health Check completed successfully.'
+                }
+
+                failure {
+                    echo 'Health Check failed.'
+                }
+            }            
         }
 
         stage('Functional Test') {
             steps {
+                echo '========== FUNCTIONAL TEST =========='
                 sh '''
-                    curl http://localhost > output.html
-                    grep "System Dashboard" output.html
+                    docker exec nginx curl -f http://localhost > output.html
+                    grep "System Monitor" output.html
                 '''
             }
+            post {
+                success {
+                    echo 'Functional Test completed successfully.'
+                }
+
+                failure {
+                    echo 'Functional Test failed.'
+                }
+            }            
         }
     }
 
     post {
+
+        success {
+            echo 'Pipeline completed successfully.'
+        }
+
+        failure {
+            echo 'Pipeline failed. Check the logs above for the failed stage.'
+        }
+
         always {
+            echo 'Cleaning up containers...'
             sh 'docker compose down'
+            echo 'Cleanup completed.'
         }
     }
 }
