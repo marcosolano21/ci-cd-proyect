@@ -85,6 +85,29 @@ pipeline {
                 }
             }            
         }
+        
+        stage('Deploy') {
+            steps {
+                sshagent(credentials: ['ec2-ssh-key']) {
+                    sh '''
+                        ssh -o StrictHostKeyChecking=no ubuntu@34.207.198.223 "
+                            cd /home/ubuntu/ci-cd-proyect/ &&
+                            git pull &&
+                            docker compose down &&
+                            docker compose up -d --build
+                        "
+                    '''
+                }
+            }
+        }
+        
+        stage('Verify Deployment') {
+            steps {
+                sh 'curl -f http://34.207.198.223'
+            }
+        }
+        
+        
     }
 
     post {
