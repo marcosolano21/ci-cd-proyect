@@ -6,7 +6,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 echo '========== CHECKOUT =========='
-                git url: 'https://github.com/marcosolano21/ci-cd-proyect.git', branch: 'main'
+                git url: 'https://github.com/marcosolano21/ci-cd-project-docker-jenkins-ec2.git', branch: 'main'
             }
             post {
                 success {
@@ -88,22 +88,22 @@ pipeline {
         
         stage('Deploy') {
             steps {
-                sshagent(credentials: ['ec2-ssh-key']) {
+                sshagent(credentials: ['ec2-ssh-key']) { // This is the Key name you need to configure to SSH to the EC2 instance
                     sh '''
-                        ssh -o StrictHostKeyChecking=no ubuntu@34.207.198.223 "
+                        ssh -o StrictHostKeyChecking=no ubuntu@34.207.198.223 " 
                             cd /home/ubuntu/ci-cd-proyect/ &&
                             git pull &&
                             docker compose down &&
                             docker compose up -d --build
                         "
-                    '''
+                    ''' // Here you need to change the Public IP of your EC2 instance
                 }
             }
         }
         
         stage('Verify Deployment') {
             steps {
-                sh 'curl -f http://34.207.198.223'
+                sh 'curl -f http://34.207.198.223' // Here you need to change the Public IP of your EC2 instance
             }
         }
         

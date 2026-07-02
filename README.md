@@ -221,3 +221,12 @@ docker run -d \
 > ```
 >
 > The remainder of the `docker run` command stays the same.
+
+
+# GitHub Webhook Configuration
+
+To trigger the Jenkins pipeline automatically whenever code is pushed to the repository, configure a webhook between GitHub and Jenkins.
+
+> **Note:** If Jenkins is running on your local machine (`localhost`), GitHub cannot reach it because the webhook endpoint must be publicly accessible. For automatic pipeline execution, Jenkins must be exposed to the internet (for example, by running it on an AWS EC2 instance or by using a tunneling service such as ngrok or Cloudflare Tunnel).
+
+Once the webhook is configured successfully, every `git push` to the configured branch will automatically trigger the Jenkins CI/CD pipeline without requiring a manual intervention.
