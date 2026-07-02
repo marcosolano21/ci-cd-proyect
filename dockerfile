@@ -2,7 +2,7 @@ FROM jenkins/jenkins:lts-jdk21
 
 USER root
 
-# Instalar herramientas básicas
+# Installing basic tools
 RUN apt-get update && \
     apt-get install -y \
         git \
@@ -12,7 +12,7 @@ RUN apt-get update && \
         gnupg && \
     rm -rf /var/lib/apt/lists/*
 
-# Agregar el repositorio oficial de Docker
+# Add the official Docker repo
 RUN install -m 0755 -d /etc/apt/keyrings && \
     curl -fsSL https://download.docker.com/linux/debian/gpg | \
     gpg --dearmor -o /etc/apt/keyrings/docker.gpg && \
@@ -24,10 +24,18 @@ RUN echo \
     $(. /etc/os-release && echo $VERSION_CODENAME) stable" \
     > /etc/apt/sources.list.d/docker.list
 
-# Instalar Docker CLI y Docker Compose
+# Installing Docker CLI and Docker Compose
 RUN apt-get update && \
     apt-get install -y docker-ce-cli docker-compose-plugin && \
     rm -rf /var/lib/apt/lists/*
 
-# Mantener Jenkins ejecutándose como root para este laboratorio, ojo: no es el best practice
+# In order to make the project easy to run, we use the root user instead of the default user (jenkins)
+# This allow us to ignore providing the right privileges to jenkins user to access Docker socket
+# Kindly note that in a prodcution environment this is not the best practice
 USER root
+
+# To build the Jenkins container image:
+# docker build -t my-jenkins .
+
+# The recommended instruction to deploy the Jenkins container is this:
+# docker run -d --name jenkins -p 8080:8080 -p 50000:50000 -v jenkins_home:/var/jenkins_home -v //var/run/docker.sock:/var/run/docker.sock my-jenkins

@@ -7,6 +7,6 @@ services:
     build: ./nginx
     container_name: nginx
     ports:
-      - "80:80" # Esto va a mapear el puerto 80 de la computadora al puerto 80 del contenedor
+      - "80:80" # Maping port 80 to port 80 on the container
     depends_on:
       - flask
