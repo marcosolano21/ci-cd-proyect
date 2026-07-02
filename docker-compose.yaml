@@ -4,7 +4,7 @@ services:
     container_name: flask-app
 
   nginx:
-    image: marcosolano/nginx:lates
+    image: marcosolano/nginx:latest
     container_name: nginx
     ports:
       - "80:80" # Maping port 80 to port 80 on the container
