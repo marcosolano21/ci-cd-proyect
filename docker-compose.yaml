@@ -1,10 +1,10 @@
 services:
   flask:
-    build: ./flask
+    image: marcosolano/flask:latest
     container_name: flask-app
 
   nginx:
-    build: ./nginx
+    image: marcosolano/nginx:lates
     container_name: nginx
     ports:
       - "80:80" # Maping port 80 to port 80 on the container
